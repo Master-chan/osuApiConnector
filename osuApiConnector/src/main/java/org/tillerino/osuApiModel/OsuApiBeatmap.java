@@ -172,6 +172,16 @@ public class OsuApiBeatmap {
 	 */
 	@SerializedName("max_combo")
 	private int maxCombo;
+	
+	/*
+	 * 	download_unavailable	"0"
+		audio_unavailable	"0"
+	 */
+	@SerializedName("download_unavailable")
+	private int downloadUnavailable;
+	
+	@SerializedName("audio_unavailable")
+	private int audioUnavailable;
 
     static final Gson gson = CustomGson.wrap(false, OsuApiBeatmap.class);
     
