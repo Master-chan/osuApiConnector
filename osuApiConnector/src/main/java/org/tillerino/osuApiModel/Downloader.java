@@ -40,6 +40,8 @@ public class Downloader {
 	public static final String GET_USER = "get_user";
 	
 	public static final String GET_USER_RECENT = "get_user_recent";
+	
+	public static final String GET_MULTIPLAYER_ROOM = "get_match";
 
 	private final String baseUrl;
 
@@ -322,5 +324,16 @@ public class Downloader {
 		}
 		
 		return OsuApiScore.fromJsonArray((JsonArray) jsonElement, cls, mode);
+	}
+	
+	public <T extends OsuApiMultiplayerRoom> T getMultiplayerRoom(long roomId, Class<T> cls) throws IOException
+	{
+		JsonElement jsonElement = get(GET_MULTIPLAYER_ROOM, "mp", String.valueOf(roomId));
+		if(jsonElement instanceof JsonNull)
+		{
+			return null;
+		}
+		
+		return OsuApiMultiplayerRoom.fromJsonObject((JsonObject) jsonElement, cls);
 	}
 }
