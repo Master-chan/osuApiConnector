@@ -30,6 +30,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Data
 public class OsuApiBeatmap {
+	
 	@BeatmapId
 	@Getter(onMethod=@__(@BeatmapId))
 	@Setter(onParam=@__(@BeatmapId))
@@ -183,7 +184,7 @@ public class OsuApiBeatmap {
 	@SerializedName("audio_unavailable")
 	private int audioUnavailable;
 
-    static final Gson gson = CustomGson.wrap(false, OsuApiBeatmap.class);
+    public static final Gson gson = CustomGson.wrap(false, OsuApiBeatmap.class);
     
     public static final int LOVED = 4;
     public static final int QUALIFIED = 3;

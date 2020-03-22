@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Data
 public class OsuApiUser {
+	
 	@SerializedName("user_id")
 	@UserId
 	@Getter(onMethod=@__(@UserId))

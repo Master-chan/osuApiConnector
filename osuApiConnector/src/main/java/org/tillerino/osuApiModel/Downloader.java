@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
@@ -114,7 +115,7 @@ public class Downloader {
 		JsonArray array = (JsonArray) get(GET_BEATMAPS, "b",
 				String.valueOf(beatmapId));
 		if(array.size() == 0) {
-			return null;
+			throw new EndpointDataException("Beatmap " + beatmapId + " is invalid;");
 		}
 		return OsuApiBeatmap.fromJsonObject((JsonObject) array.get(0), cls);
 	}
@@ -298,7 +299,8 @@ public class Downloader {
 		JsonArray jsonArray = (JsonArray) get(GET_USER, "u", String.valueOf(userId), "m", String.valueOf(mode), "type", "id");
 		
 		if(jsonArray.size() == 0) {
-			return null;
+			//return null;
+			throw new EndpointDataException("User " + userId + " is doesn't exist or is restricted;");
 		}
 		T user = OsuApiUser.fromJsonObject((JsonObject) jsonArray.get(0), cls, mode);
 		user.setMode(mode);
@@ -310,7 +312,7 @@ public class Downloader {
 		JsonArray jsonArray = (JsonArray) get(GET_USER, "u", username, "m", String.valueOf(mode), "type", "string");
 		
 		if(jsonArray.size() == 0) {
-			return null;
+			throw new EndpointDataException("User " + username + " is doesn't exist or is restricted;");
 		}
 		T user = OsuApiUser.fromJsonObject((JsonObject) jsonArray.get(0), cls, mode);
 		user.setMode(mode);
@@ -331,9 +333,19 @@ public class Downloader {
 		JsonElement jsonElement = get(GET_MULTIPLAYER_ROOM, "mp", String.valueOf(roomId));
 		if(jsonElement instanceof JsonNull)
 		{
-			return null;
+			throw new EndpointDataException("Multiplayer room " + roomId + " doesn't exist;");
 		}
 		
-		return OsuApiMultiplayerRoom.fromJsonObject((JsonObject) jsonElement, cls);
+		T returnRoom = null;
+		try
+		{
+			returnRoom = OsuApiMultiplayerRoom.fromJsonObject((JsonObject) jsonElement, cls);
+		}
+		catch(JsonParseException ex)
+		{
+			// Invalid rooms have different representation thatn invalid objects on other endpoints and will cause JSON exception
+			throw new EndpointDataException("Multiplayer room " + roomId + " threw json exception. It might be invalid;", ex);
+		}
+		return returnRoom;
 	}
 }
